@@ -4,17 +4,21 @@ import com.example.ZarChat.Client.Command;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class ClientHandler {
-    private final static String COMMAND_PREFIX = "/";
     private final Socket socket;
     private final ChatServer chatServer;
     private final DataInputStream in;
     private final DataOutputStream out;
 
     private String nick;
+    private Path clientDir;
+
 
     public ClientHandler(Socket socket, ChatServer chatServer) {
         try {
@@ -135,7 +139,23 @@ public class ClientHandler {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+    public void writeBytes(byte[] bytes, int off, int cnt) throws IOException{
+        out.write(bytes, off, cnt);
+        out.flush();
+    }
 
+    public void sendFile(String fileName) throws IOException{
+        byte[] buf = new byte[8192];
+        Path file = clientDir.resolve(fileName);
+        out.writeUTF("/file");
+        out.writeLong(Files.size(file));
+        try (FileInputStream fin = new FileInputStream(file.toFile())){
+            int read = 0;
+            while ((read = fin.read(buf)) != -1){
+                writeBytes(buf, 0, read);
+            }
+        }
     }
 
     public String getNick() {

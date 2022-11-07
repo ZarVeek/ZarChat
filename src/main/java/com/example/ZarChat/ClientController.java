@@ -11,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 
-
 public class ClientController {
     @FXML
     private Button closeButton;

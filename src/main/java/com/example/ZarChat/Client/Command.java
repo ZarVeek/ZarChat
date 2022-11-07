@@ -8,7 +8,8 @@ public enum Command {
     PRIVATE_MESSAGE("/w"),
     END("/end"),
     CLIENTS("/clients "),
-    SIMPLE_MESSAGE("");
+    SIMPLE_MESSAGE(""),
+    FILe ("/file");
 
     private String command;
 
